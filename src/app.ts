@@ -20,6 +20,11 @@ export class App {
 
     settings() {
         this.app.set('port', this.port || process.env.APP_PORT || 3000);
+
+        // Cors
+        const cors = require('cors');
+        this.app.use(cors());
+        this.app.options('*', cors());
     }
 
     middlewares() {
