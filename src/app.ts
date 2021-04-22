@@ -4,27 +4,18 @@ import morgan from 'morgan';
 require('dotenv').config()
 
 // Routes
-import indexRoutes from './routes/index.routes';
-import userRoutes from './routes/user.routes';
+import { Routes } from "./config/routes";
 
 export class App {
 
-    private app: Application;
+    public app: express.Application;
+    public routePrv: Routes = new Routes();
 
     constructor(private port?: number | string) {
         this.app = express();
         this.settings();
         this.middlewares();
-        this.routes();
-    }
-
-    settings() {
-        this.app.set('port', this.port || process.env.APP_PORT || 3000);
-
-        // Cors
-        const cors = require('cors');
-        this.app.use(cors());
-        this.app.options('*', cors());
+        this.routePrv.routes(this.app);
     }
 
     middlewares() {
@@ -32,10 +23,13 @@ export class App {
         // this.app.use(express.urlencoded({extended:false}));
         this.app.use(express.json());
     }
+    settings() {
+        this.app.set('port', this.port || process.env.APP_PORT || 3000);
 
-    routes() {
-        this.app.use(indexRoutes);
-        this.app.use('/api/users', userRoutes);
+        // Cors
+        const cors = require('cors');
+        this.app.use(cors());
+        this.app.options('*', cors());
     }
 
     async listen() {
